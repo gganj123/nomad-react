@@ -5,13 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ToDoList from './components/ToDoList';
 import CoinTracker from './components/CoinTracker';
+import MovieList from './components/MovieList';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
-  
-  <CoinTracker/>
-    <ToDoList/>
+    <MovieList/>
+  {/*  <CoinTracker />
+    <ToDoList /> */}
   </>
 );
 

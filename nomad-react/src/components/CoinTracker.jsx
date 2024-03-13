@@ -11,17 +11,21 @@ const CoinTracker = () => {
         const selectedId = event.target.value;
         const selectedItem = coins.find((item) => item.id === selectedId);
         setSelectedCoin(selectedItem);
-        
+
         const myMoney = parseFloat(inputAmount);
         const meCoin = myMoney / (selectedItem ? selectedItem.quotes.USD.price : 1);
         setMyCoin(meCoin);
     };
 
     const changeUSD = (event) => {
-        const myMoney = parseFloat(event.target.value);
-        const meCoin = myMoney / (selectedCoin ? selectedCoin.quotes.USD.price : 1);
-        setMyCoin(meCoin);
-        setInputAmount(myMoney);
+        const inputValue = event.target.value;
+        // 입력 값이 숫자가 아닌 경우 무시하고 변경하지 않음
+        if (/^\d*\.?\d*$/.test(inputValue)) {
+            setInputAmount(inputValue);
+            const myMoney = parseFloat(inputValue);
+            const meCoin = myMoney / (selectedCoin ? selectedCoin.quotes.USD.price : 1);
+            setMyCoin(meCoin);
+        }
     };
 
     useEffect(() => {
