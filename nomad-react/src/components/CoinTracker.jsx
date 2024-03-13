@@ -1,10 +1,62 @@
-import React , {useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
-const CoinTracker = () =>{
+const CoinTracker = () => {
+    const [loading, setLoading] = useState(true);
+    const [coins, setCoins] = useState([]);
+    const [selectedCoin, setSelectedCoin] = useState(null);
+    const [inputAmount, setInputAmount] = useState('');
+    const [myCoin, setMyCoin] = useState(0);
 
-return <div>
-    aa
-</div>;
-}
+    const changeSelect = (event) => {
+        const selectedId = event.target.value;
+        const selectedItem = coins.find((item) => item.id === selectedId);
+        setSelectedCoin(selectedItem);
+        
+        const myMoney = parseFloat(inputAmount);
+        const meCoin = myMoney / (selectedItem ? selectedItem.quotes.USD.price : 1);
+        setMyCoin(meCoin);
+    };
+
+    const changeUSD = (event) => {
+        const myMoney = parseFloat(event.target.value);
+        const meCoin = myMoney / (selectedCoin ? selectedCoin.quotes.USD.price : 1);
+        setMyCoin(meCoin);
+        setInputAmount(myMoney);
+    };
+
+    useEffect(() => {
+        fetch("https://api.coinpaprika.com/v1/tickers")
+            .then((response) => response.json())
+            .then((data) => {
+                setCoins(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+                setLoading(false);
+            });
+    }, []);
+
+    return (
+        <div>
+            <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
+            {loading ? (
+                <strong>Loading...</strong>
+            ) : (
+                <select onChange={changeSelect}>
+                    <option value="">Select a coin</option>
+                    {coins.map((coin) => (
+                        <option key={coin.id} value={coin.id}>
+                            {coin.name} ({coin.symbol}): ${coin.quotes.USD.price}
+                        </option>
+                    ))}
+                </select>
+            )}
+            <input value={inputAmount} onChange={changeUSD} type="number" />
+            {selectedCoin && <p>Selected Coin: {selectedCoin.name}</p>}
+            <p>My Coin: {myCoin}</p>
+        </div>
+    );
+};
 
 export default CoinTracker;
